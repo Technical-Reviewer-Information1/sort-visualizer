@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>整列のアルゴリズムを動かして理解する｜情報Ⅰ共通テスト対策問題集</title>
+<meta name="description" content="バブルソートと選択ソートを1手ずつ動かします。プログラムのどの行を実行しているか、変数 i・j がいくつかを見ながら、並びかわるようすを追いましょう。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 fill=%22%2315181c%22/%3E%3Ctext x=%2216%22 y=%2222%22 font-size=%2218%22 font-family=%22monospace%22 fill=%22%23fff%22 text-anchor=%22middle%22%3E01%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css?v=239696b1">
+<link rel="stylesheet" href="css/app.css?v=9b17b04e">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="inner">
+    <span class="eyebrow">第 2 章　プログラミング　2-12・2-13</span>
+    <h1>整列のアルゴリズムを動かして理解する（pp.78-84）</h1>
+    <p class="lead">バブルソートと選択ソートを1手ずつ動かします。プログラムのどの行を実行しているか、変数 i・j がいくつかを見ながら、並びかわるようすを追いましょう。</p>
+    <p class="credit">Created by Dit-Lab.(Daiki ITO)　/　Supported by Tomoaki ATSUMI</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="step" id="step1">
+    <h2><span class="no">STEP 1</span>バブルソート（交換法）を1手ずつ動かす</h2>
+    <p class="desc">となり合う2つを比べて、左が大きければ入れかえます。本文と同じ <span class="mono">[92, 43, 58, 17]</span> から始まります。</p>
+    <div class="panel">
+      <div class="btn-row" style="flex-wrap:wrap">
+        <button class="btn primary" id="bStep">1手すすめる ▶</button>
+        <button class="btn" id="bPlay">自動で動かす</button>
+        <button class="btn" id="bBack">◀ 1手もどる</button>
+        <button class="btn ghost" id="bReset">最初から</button>
+        <span class="badge" id="bProg"></span>
+      </div>
+      <div class="grid c2" style="margin-top:14px">
+        <div>
+          <div class="bars" id="bBars"></div>
+          <div class="arr" id="bArr"></div>
+          <div class="vars" id="bVars"></div>
+          <div class="metrics" style="margin-top:12px">
+            <div class="metric"><div class="k">比較した回数</div><div class="v" id="bCmp">0</div></div>
+            <div class="metric"><div class="k">交換した回数</div><div class="v" id="bSwp">0</div></div>
+          </div>
+        </div>
+        <div>
+          <pre class="code" id="bCode"></pre>
+          <div class="note" id="bNote" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="step" id="step2">
+    <h2><span class="no">STEP 2</span>選択ソート（選択法）を1手ずつ動かす</h2>
+    <p class="desc">まだ並んでいない部分から<strong>いちばん小さいもの</strong>を探して、その先頭と入れかえます。本文と同じ <span class="mono">[92, 58, 17, 43]</span> から始まります。</p>
+    <div class="panel">
+      <div class="btn-row" style="flex-wrap:wrap">
+        <button class="btn primary" id="sStep">1手すすめる ▶</button>
+        <button class="btn" id="sPlay">自動で動かす</button>
+        <button class="btn" id="sBack">◀ 1手もどる</button>
+        <button class="btn ghost" id="sReset">最初から</button>
+        <span class="badge" id="sProg"></span>
+      </div>
+      <div class="grid c2" style="margin-top:14px">
+        <div>
+          <div class="bars" id="sBars"></div>
+          <div class="arr" id="sArr"></div>
+          <div class="vars" id="sVars"></div>
+          <div class="metrics" style="margin-top:12px">
+            <div class="metric"><div class="k">比較した回数</div><div class="v" id="sCmp">0</div></div>
+            <div class="metric"><div class="k">交換した回数</div><div class="v" id="sSwp">0</div></div>
+          </div>
+        </div>
+        <div>
+          <pre class="code" id="sCode"></pre>
+          <div class="note" id="sNote" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="step" id="step3">
+    <h2><span class="no">STEP 3</span>自分のデータで2つを比べる</h2>
+    <p class="desc">同じデータを両方のアルゴリズムに入れて、<strong>比較回数と交換回数</strong>を比べます。</p>
+    <div class="panel">
+      <div class="btn-row" style="align-items:flex-end;flex-wrap:wrap;gap:10px">
+        <label class="fld" for="dataIn" style="flex:1;min-width:16em">データ（数を「,」で区切って入力）<br>
+          <input type="text" id="dataIn" class="mono" style="width:100%" value="92, 43, 58, 17"></label>
+      </div>
+      <div class="btn-row" style="margin-top:8px;flex-wrap:wrap">
+        <button class="btn" data-set="92, 43, 58, 17">本文の例</button>
+        <button class="btn" data-set="1, 2, 3, 4, 5, 6, 7, 8">すでに並んでいる</button>
+        <button class="btn" data-set="8, 7, 6, 5, 4, 3, 2, 1">逆に並んでいる</button>
+        <button class="btn" id="randData">でたらめに作る</button>
+      </div>
+      <label class="fld" for="nData" style="margin-top:12px">でたらめに作るときの個数：<span class="mono" id="nDataV">8</span> 個</label>
+      <input type="range" id="nData" min="4" max="30" step="1" value="8">
+      <div class="race" id="raceBox" style="margin-top:14px"></div>
+      <div class="note" id="raceNote" style="margin-top:12px"></div>
+      <hr class="sep">
+      <p class="qhead">要素数を増やすと回数はどう増えるか</p>
+      <div class="tbl-scroll"><table class="tbl" id="growTable"></table></div>
+      <div class="note info" style="margin-top:10px">
+        どちらも比較回数は <span class="mono">n(n−1)÷2</span> 回です。要素数が2倍になると、回数はおよそ<strong>4倍</strong>になります。
+      </div>
+    </div>
+  </section>
+
+  <section class="step" id="step4">
+    <h2><span class="no">本文</span>バブルソートの問題を解く（2-12）</h2>
+    <p class="desc">STEP 1 の画面を見ながら答えましょう。</p>
+    <div class="panel" id="q12Box"></div>
+    <div class="note" id="q12Note" style="margin-top:10px"></div>
+  </section>
+
+  <section class="step" id="step5">
+    <h2><span class="no">本文</span>選択ソートの問題を解く（2-13）</h2>
+    <p class="desc">STEP 2 の画面を見ながら答えましょう。</p>
+    <div class="panel" id="q13Box"></div>
+    <div class="note" id="q13Note" style="margin-top:10px"></div>
+  </section>
+
+  <section class="step" id="glossary">
+    <h2><span class="no">用語</span>この節で出てくることば</h2>
+    <div class="panel"><div id="glossBox"></div></div>
+  </section>
+
+  <section class="step" id="wrap">
+    <h2><span class="no">まとめ</span>おさえておきたいこと</h2>
+    <div class="panel">
+      <ul class="bullets">
+        <li><strong>バブルソート（交換法）</strong>＝となり合う2つを比べて入れかえる。1周ごとに端に最小（または最大）が確定する。</li>
+        <li><strong>選択ソート（選択法）</strong>＝未整列部分から最小を探し、その先頭と1回だけ入れかえる。<strong>交換回数が少ない</strong>のが特徴。</li>
+        <li>となり合う要素は <span class="mono">Data[j]</span> と <span class="mono">Data[j+1]</span>。添字は0から始まるので、最後の添字は <span class="mono">n−1</span>。</li>
+        <li>交換は<strong>3行1組</strong>：<span class="mono">hozon = Data[j]</span> → <span class="mono">Data[j] = Data[j+1]</span> → <span class="mono">Data[j+1] = hozon</span>。いきなり代入すると値が消えます。</li>
+        <li>比較回数はどちらも <span class="mono">n(n−1)÷2</span>。要素数が増えると急に増えるので、大きなデータには向きません。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2><span class="no">活用</span>授業・探究での使い方</h2>
+    <div class="use-note">
+      <h3>授業で</h3>
+      <ul>
+        <li>STEP 1 を「1手ずつ」で全員で追い、次にどこが入れかわるかを予想させてから進める。</li>
+        <li>STEP 3 で同じデータを2つのアルゴリズムに与え、比較回数と交換回数の差を記録させる。</li>
+        <li>STEP 4・5 の穴埋めは、STEP 1・2 の画面を見ながら解かせると根拠を持って答えられる。</li>
+      </ul>
+      <h3 style="margin-top:12px">探究で</h3>
+      <ul>
+        <li>要素数を増やしたとき、比較回数がどう増えるかを調べ、n の式で表す。</li>
+        <li>すでに並んでいるデータ・逆順のデータで回数を比べ、得意な場面と苦手な場面を考える。</li>
+        <li>教科書に載っていない整列方法（挿入ソートなど）を調べ、同じ形で回数を比べる。</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="app-footer">
+  情報Ⅰ 共通テスト対策問題集（技術評論社）連動Webアプリ　/　Created by Dit-Lab.(Daiki ITO)　/　Supported by Tomoaki ATSUMI
+</footer>
+
+<script src="js/terms.js?v=867e9694"></script>
+<script src="js/quiz.js?v=5d6779cc"></script>
+<script src="js/app.js?v=c2b233b7"></script>
+</body>
+</html>
