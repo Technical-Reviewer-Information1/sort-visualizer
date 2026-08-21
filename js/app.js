@@ -200,6 +200,90 @@
       }).join('') + '</tbody>';
   }
 
+
+  /* ===================== 手で並べかえる（人 vs アルゴリズム） ===================== */
+  const H = { a: [], mode: 'free', pick: -1, swp: 0, done: false };
+
+  function minSwaps(src) {           /* 自由に交換できるときの最小交換回数＝n − 巡回の個数 */
+    const a = src.slice(), n = a.length;
+    const idx = a.map((v, i) => i).sort((x, y) => a[x] - a[y]);
+    const seen = new Array(n).fill(false);
+    let cyc = 0;
+    for (let i = 0; i < n; i++) {
+      if (seen[i]) continue;
+      cyc++;
+      let j = i;
+      while (!seen[j]) { seen[j] = true; j = idx[j]; }
+    }
+    return n - cyc;
+  }
+  function sortedYet(a) { return a.every((v, i) => i === 0 || a[i - 1] <= v); }
+
+  function hNew() {
+    const n = 6, pool = [];
+    while (pool.length < n) {
+      const v = 10 + Math.floor(Math.random() * 90);
+      if (pool.indexOf(v) < 0) pool.push(v);
+    }
+    if (sortedYet(pool)) { pool.reverse(); }
+    H.a = pool; H.pick = -1; H.swp = 0; H.done = false;
+    const b = count(bubbleFrames(H.a)), sl = count(selectionFrames(H.a));
+    $('hBub').textContent = b.s + ' 回';
+    $('hSel').textContent = sl.s + ' 回';
+    $('hMin').textContent = minSwaps(H.a) + ' 回';
+    hDraw();
+    const n2 = $('hNote'); n2.className = 'note info';
+    n2.innerHTML = H.mode === 'free'
+      ? 'カードを2枚えらぶと入れかわります。<strong>いちばん少ない交換回数</strong>をねらってみましょう。'
+      : 'いまは<strong>となりどうしだけ</strong>交換できます。これがバブルソートと同じ制限です。';
+  }
+
+  function hDraw() {
+    const box = $('hCards');
+    box.className = 'hand' + (H.done ? ' done' : '');
+    box.innerHTML = H.a.map(function (v, i) {
+      const c = H.done ? 'ok' : (i === H.pick ? 'pick' : '');
+      return '<button class="card ' + c + '" data-i="' + i + '">' + v + '<em>[' + i + ']</em></button>';
+    }).join('');
+    box.querySelectorAll('button[data-i]').forEach(b => b.addEventListener('click', () => hTap(+b.dataset.i)));
+    $('hSwp').textContent = H.swp + ' 回';
+  }
+
+  function hTap(i) {
+    if (H.done) return;
+    const n = $('hNote');
+    if (H.pick < 0) { H.pick = i; hDraw(); return; }
+    if (H.pick === i) { H.pick = -1; hDraw(); return; }
+    if (H.mode === 'near' && Math.abs(H.pick - i) !== 1) {
+      n.className = 'note ng';
+      n.innerHTML = '<strong>となりどうししか交換できません。</strong>' +
+        'バブルソートも同じで、<span class="mono">Data[j]</span> と <span class="mono">Data[j+1]</span> しか比べられません。' +
+        '遠くへ動かすには、となりへの交換をくり返すしかないのです。';
+      H.pick = -1; hDraw(); return;
+    }
+    const t = H.a[H.pick]; H.a[H.pick] = H.a[i]; H.a[i] = t;
+    H.swp++; H.pick = -1;
+    if (sortedYet(H.a)) {
+      H.done = true; hDraw();
+      const bub = $('hBub').textContent, sel = $('hSel').textContent, min = $('hMin').textContent;
+      const minN = parseInt(min, 10);
+      n.className = 'note ' + (H.swp <= minN ? 'ok' : 'warn');
+      n.innerHTML = '<strong>並びました。あなたは ' + H.swp + ' 回。</strong>' +
+        '（最小 ' + min + '／バブル ' + bub + '／選択 ' + sel + '）<br>' +
+        (H.mode === 'free'
+          ? '人は<strong>全体を見わたして</strong>「どこへ動かせばよいか」がわかるので、少ない回数で並べられます。' +
+            'コンピュータは全体を見わたせないので、<strong>決まった手順（アルゴリズム）</strong>で必ず並ぶようにします。' +
+            'その代わり、どんなデータでも必ず終わることが保証されます。'
+          : 'となりどうししか動かせないと、遠くのカードを運ぶのに何回も交換が必要でした。' +
+            'これが<strong>バブルソートで交換回数が多くなる理由</strong>です。' +
+            '選択ソートは「いちばん小さいものを探してから1回だけ交換」するので、交換回数が少なくなります。');
+      return;
+    }
+    hDraw();
+    n.className = 'note info';
+    n.innerHTML = '交換 ' + H.swp + ' 回。いまの並び：<span class="mono">' + H.a.join(', ') + '</span>';
+  }
+
   function init() {
     makeRunner('b', bubbleFrames([92, 43, 58, 17]), BUBBLE_CODE);
     makeRunner('s', selectionFrames([92, 58, 17, 43]), SELECT_CODE);
@@ -213,6 +297,46 @@
       $('dataIn').value = a.join(', '); drawRace();
     });
     drawRace();
+
+    hNew();
+    document.querySelectorAll('[data-hmode]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        H.mode = b.dataset.hmode;
+        document.querySelectorAll('[data-hmode]').forEach(x => x.classList.toggle('primary', x === b));
+        hNew();
+      });
+    });
+    $('hNew').addEventListener('click', hNew);
+
+    Predict.make('pd1', {
+      q: '[92, 43, 58, 17] をバブルソートしたとき、<strong>1周目が終わった時点</strong>の並びは？',
+      type: 'pick',
+      ch: ['17, 92, 43, 58', '43, 58, 17, 92', '17, 43, 58, 92', '92, 58, 43, 17'],
+      answer: function () { return 0; },
+      show: function () { return 'STEP 1 の「1手すすめる」で、i ＝ 0 の周が終わるまで進めると確かめられます。'; },
+      why: 'この本のバブルソートは<strong>右から左へ</strong>比べていくので、1周目で<strong>いちばん小さい 17 が左端に来ます</strong>。' +
+           '②は完成形、④は大きい順です。'
+    });
+
+    Predict.make('pd2', {
+      q: '[92, 43, 58, 17] をバブルソートするとき、<strong>比較する回数</strong>は全部で何回？',
+      type: 'num', unit: '回', placeholder: '回数',
+      answer: function () { return count(bubbleFrames([92, 43, 58, 17])).c; },
+      show: function (r) {
+        return '要素数 n ＝ 4 のとき <span class="mono">n(n−1)÷2 ＝ 4×3÷2 ＝ ' + r + '</span> 回。' +
+               '3回＋2回＋1回、と1周ごとに1回ずつ減ります。';
+      },
+      why: '<strong>比較回数はデータの中身に関係なく決まります。</strong>変わるのは交換回数のほうです。'
+    });
+
+    Predict.make('pd3', {
+      q: 'すでに小さい順に並んでいる [1, 2, 3, 4, 5, 6, 7, 8] をバブルソートしたとき、<strong>交換する回数</strong>は？',
+      type: 'num', unit: '回', placeholder: '回数',
+      answer: function () { return count(bubbleFrames([1, 2, 3, 4, 5, 6, 7, 8])).s; },
+      show: function () { return 'STEP 4 の「すでに並んでいる」ボタンでも同じことが確かめられます。'; },
+      why: '交換は「左のほうが大きいとき」だけ起こります。すでに並んでいれば一度も起こりません。' +
+           'ただし<strong>比較は 28 回そのまま行われます</strong>——バブルソートは「もう並んでいる」ことに気づけないからです。'
+    });
 
     Quiz.choice('q12Box', 'q12Note', [
       { k: 'ア', q: '[92, 43, 58, 17] を右端2つから順に比較・交換していったとき、1周目が終わった配列は。',

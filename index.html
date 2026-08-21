@@ -6,8 +6,8 @@
 <title>整列のアルゴリズムを動かして理解する｜情報Ⅰ共通テスト対策問題集</title>
 <meta name="description" content="バブルソートと選択ソートを1手ずつ動かします。プログラムのどの行を実行しているか、変数 i・j がいくつかを見ながら、並びかわるようすを追いましょう。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 fill=%22%2315181c%22/%3E%3Ctext x=%2216%22 y=%2222%22 font-size=%2218%22 font-family=%22monospace%22 fill=%22%23fff%22 text-anchor=%22middle%22%3E01%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="css/style.css?v=239696b1">
-<link rel="stylesheet" href="css/app.css?v=9b17b04e">
+<link rel="stylesheet" href="css/style.css?v=ea93572e">
+<link rel="stylesheet" href="css/app.css?v=feacb704">
 </head>
 <body>
 
@@ -79,8 +79,41 @@
     </div>
   </section>
 
+
+  <section class="step" id="stepHand">
+    <h2><span class="no">STEP 3</span>自分の手で並べかえてみる（人 vs アルゴリズム）</h2>
+    <p class="desc">カードを2枚えらぶと入れかわります。<strong>小さい順</strong>に並べてください。何回の交換でできますか。</p>
+    <div class="panel">
+      <div class="btn-row" style="flex-wrap:wrap">
+        <button class="btn primary" data-hmode="free">自由に交換できる</button>
+        <button class="btn" data-hmode="near">となりどうしだけ交換できる</button>
+        <button class="btn ghost" id="hNew">新しい問題</button>
+      </div>
+      <div class="hand" id="hCards" style="margin-top:16px"></div>
+      <div class="metrics" style="margin-top:14px">
+        <div class="metric"><div class="k">あなたの交換回数</div><div class="v" id="hSwp">0</div></div>
+        <div class="metric"><div class="k">バブルソート</div><div class="v" id="hBub">—</div></div>
+        <div class="metric"><div class="k">選択ソート</div><div class="v" id="hSel">—</div></div>
+        <div class="metric"><div class="k">理論上の最小</div><div class="v" id="hMin">—</div></div>
+      </div>
+      <div class="note" id="hNote" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <section class="step" id="stepGuess">
+    <h2><span class="no">予想</span>やる前に予想してみる</h2>
+    <p class="desc">動かす前に自分で考えてから確かめると、手順が頭に残ります。</p>
+    <div class="panel">
+      <div id="pd1"></div>
+      <hr class="sep">
+      <div id="pd2"></div>
+      <hr class="sep">
+      <div id="pd3"></div>
+    </div>
+  </section>
+
   <section class="step" id="step3">
-    <h2><span class="no">STEP 3</span>自分のデータで2つを比べる</h2>
+    <h2><span class="no">STEP 4</span>自分のデータで2つを比べる</h2>
     <p class="desc">同じデータを両方のアルゴリズムに入れて、<strong>比較回数と交換回数</strong>を比べます。</p>
     <div class="panel">
       <div class="btn-row" style="align-items:flex-end;flex-wrap:wrap;gap:10px">
@@ -143,15 +176,15 @@
     <div class="use-note">
       <h3>授業で</h3>
       <ul>
-        <li>STEP 1 を「1手ずつ」で全員で追い、次にどこが入れかわるかを予想させてから進める。</li>
-        <li>STEP 3 で同じデータを2つのアルゴリズムに与え、比較回数と交換回数の差を記録させる。</li>
-        <li>STEP 4・5 の穴埋めは、STEP 1・2 の画面を見ながら解かせると根拠を持って答えられる。</li>
+        <li>STEP 3「となりどうしだけ交換できる」で全員に並べかえさせ、なぜバブルソートは交換が多いのかを体で理解させる。</li>
+        <li>「予想」セクションを先にやらせ、答え合わせのつもりで STEP 1・2 を動かす。</li>
+        <li>STEP 4 で同じデータを2つのアルゴリズムに与え、比較回数と交換回数の差を記録させる。</li>
       </ul>
       <h3 style="margin-top:12px">探究で</h3>
       <ul>
+        <li>STEP 3 の「理論上の最小」に何回で近づけるか、班で競う。何を見て動かしたかを言語化する。</li>
         <li>要素数を増やしたとき、比較回数がどう増えるかを調べ、n の式で表す。</li>
         <li>すでに並んでいるデータ・逆順のデータで回数を比べ、得意な場面と苦手な場面を考える。</li>
-        <li>教科書に載っていない整列方法（挿入ソートなど）を調べ、同じ形で回数を比べる。</li>
       </ul>
     </div>
   </section>
@@ -163,7 +196,8 @@
 </footer>
 
 <script src="js/terms.js?v=867e9694"></script>
-<script src="js/quiz.js?v=5d6779cc"></script>
-<script src="js/app.js?v=c2b233b7"></script>
+<script src="js/quiz.js?v=13402362"></script>
+<script src="js/predict.js?v=1b9c8bf0"></script>
+<script src="js/app.js?v=83f08f9a"></script>
 </body>
 </html>

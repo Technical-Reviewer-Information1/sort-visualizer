@@ -51,3 +51,13 @@ pre.code .ln.on{background:#fff3c4;font-weight:700}
 .race{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
 .race .col{border:1px solid var(--line);border-radius:3px;padding:12px;background:#fff}
 .race .col h4{margin:0 0 8px;font-size:.94rem}
+
+/* --- 手で並べかえる --- */
+.hand{display:flex;gap:8px;flex-wrap:wrap}
+.hand .card{border:1px solid var(--line);border-radius:3px;background:#fff;cursor:pointer;
+  min-width:62px;padding:14px 6px 10px;text-align:center;font:700 1.25rem/1.2 var(--mono);
+  transition:transform .12s, border-color .12s, background-color .12s}
+.hand .card em{display:block;font:400 .66rem/1.5 var(--mono);color:var(--muted);font-style:normal}
+.hand .card.pick{border-color:var(--accent);background:#e8eef7;transform:translateY(-6px)}
+.hand .card.ok{border-color:var(--ok);background:var(--ok-bg)}
+.hand.done .card{cursor:default}

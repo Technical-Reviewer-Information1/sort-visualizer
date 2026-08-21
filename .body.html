@@ -56,8 +56,41 @@
     </div>
   </section>
 
+
+  <section class="step" id="stepHand">
+    <h2><span class="no">STEP 3</span>自分の手で並べかえてみる（人 vs アルゴリズム）</h2>
+    <p class="desc">カードを2枚えらぶと入れかわります。<strong>小さい順</strong>に並べてください。何回の交換でできますか。</p>
+    <div class="panel">
+      <div class="btn-row" style="flex-wrap:wrap">
+        <button class="btn primary" data-hmode="free">自由に交換できる</button>
+        <button class="btn" data-hmode="near">となりどうしだけ交換できる</button>
+        <button class="btn ghost" id="hNew">新しい問題</button>
+      </div>
+      <div class="hand" id="hCards" style="margin-top:16px"></div>
+      <div class="metrics" style="margin-top:14px">
+        <div class="metric"><div class="k">あなたの交換回数</div><div class="v" id="hSwp">0</div></div>
+        <div class="metric"><div class="k">バブルソート</div><div class="v" id="hBub">—</div></div>
+        <div class="metric"><div class="k">選択ソート</div><div class="v" id="hSel">—</div></div>
+        <div class="metric"><div class="k">理論上の最小</div><div class="v" id="hMin">—</div></div>
+      </div>
+      <div class="note" id="hNote" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <section class="step" id="stepGuess">
+    <h2><span class="no">予想</span>やる前に予想してみる</h2>
+    <p class="desc">動かす前に自分で考えてから確かめると、手順が頭に残ります。</p>
+    <div class="panel">
+      <div id="pd1"></div>
+      <hr class="sep">
+      <div id="pd2"></div>
+      <hr class="sep">
+      <div id="pd3"></div>
+    </div>
+  </section>
+
   <section class="step" id="step3">
-    <h2><span class="no">STEP 3</span>自分のデータで2つを比べる</h2>
+    <h2><span class="no">STEP 4</span>自分のデータで2つを比べる</h2>
     <p class="desc">同じデータを両方のアルゴリズムに入れて、<strong>比較回数と交換回数</strong>を比べます。</p>
     <div class="panel">
       <div class="btn-row" style="align-items:flex-end;flex-wrap:wrap;gap:10px">
