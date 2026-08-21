@@ -68,3 +68,16 @@ pre.code .ln.on{background:#fff3c4;font-weight:700}
 .hand .card.pick{border-color:var(--accent);background:#e8eef7;box-shadow:0 -4px 0 var(--accent) inset}
 .hand .card.ok{border-color:var(--ok);background:var(--ok-bg)}
 .hand.done .card{cursor:default}
+
+/* --- 2つを並べて同時に動かす --- */
+.duel{display:grid; gap:20px}
+@media(min-width:820px){ .duel{grid-template-columns:1fr 1fr} }
+.duel .lane{min-width:0}
+.duel .lanetitle{margin:0 0 8px; font-weight:700; font-size:.94rem; color:var(--accent)}
+.duel .bars{height:170px}
+.bars.dense{gap:3px; padding:10px 6px 10px}
+.bars.dense .b i{display:none}
+.bars.dense .b span{bottom:-18px; font-size:.62rem}
+.bars.dense .b{min-width:6px}
+.duel .metrics{margin-top:26px}
+.duel .metric .v{font-size:1.5rem}

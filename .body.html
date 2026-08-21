@@ -57,8 +57,52 @@
   </section>
 
 
+  <section class="step" id="stepDuel">
+    <h2><span class="no">STEP 3</span>2つを並べて同時に動かす</h2>
+    <p class="desc">同じデータを左右に入れて、<strong>バブルソートと選択ソートを同時に</strong>進めます。
+      <strong>棒の数を増やすほど、交換回数の差がはっきり</strong>出ます。</p>
+    <div class="panel">
+      <div class="btn-row" style="flex-wrap:wrap">
+        <button class="btn primary" id="dStep">1手すすめる ▶</button>
+        <button class="btn" id="dPlay">自動で動かす</button>
+        <button class="btn" id="dEnd">最後まで一気に</button>
+        <button class="btn ghost" id="dReset">最初から</button>
+        <span class="badge" id="dProg"></span>
+      </div>
+      <label class="fld" for="dN" style="margin-top:14px">棒の数：<span class="mono" id="dNv">12</span> 本</label>
+      <input type="range" id="dN" min="4" max="20" step="1" value="12">
+      <div class="btn-row" style="flex-wrap:wrap;margin-top:4px">
+        <button class="btn sm primary" data-dgen="rand">でたらめに並べる</button>
+        <button class="btn sm" data-dgen="rev">逆順（いちばん不利）</button>
+        <button class="btn sm" data-dgen="near">ほぼ並んでいる</button>
+      </div>
+
+      <div class="duel" style="margin-top:16px">
+        <div class="lane">
+          <p class="lanetitle">バブルソート（交換法）</p>
+          <div class="bars" id="dbBars"></div>
+          <div class="metrics">
+            <div class="metric"><div class="k">比較</div><div class="v" id="dbCmp">0</div></div>
+            <div class="metric"><div class="k">交換</div><div class="v" id="dbSwp">0</div></div>
+          </div>
+          <div class="note" id="dbNote" style="margin-top:10px"></div>
+        </div>
+        <div class="lane">
+          <p class="lanetitle">選択ソート（選択法）</p>
+          <div class="bars" id="dsBars"></div>
+          <div class="metrics">
+            <div class="metric"><div class="k">比較</div><div class="v" id="dsCmp">0</div></div>
+            <div class="metric"><div class="k">交換</div><div class="v" id="dsSwp">0</div></div>
+          </div>
+          <div class="note" id="dsNote" style="margin-top:10px"></div>
+        </div>
+      </div>
+      <div class="note" id="dNote" style="margin-top:14px"></div>
+    </div>
+  </section>
+
   <section class="step" id="stepHand">
-    <h2><span class="no">STEP 3</span>自分の手で並べかえてみる（人 vs アルゴリズム）</h2>
+    <h2><span class="no">STEP 4</span>自分の手で並べかえてみる（人 vs アルゴリズム）</h2>
     <p class="desc">カードを2枚えらぶと入れかわります。<strong>小さい順</strong>に並べてください。何回の交換でできますか。</p>
     <div class="panel">
       <div class="btn-row" style="flex-wrap:wrap">
@@ -90,7 +134,7 @@
   </section>
 
   <section class="step" id="step3">
-    <h2><span class="no">STEP 4</span>自分のデータで2つを比べる</h2>
+    <h2><span class="no">STEP 5</span>自分のデータで2つを比べる</h2>
     <p class="desc">同じデータを両方のアルゴリズムに入れて、<strong>比較回数と交換回数</strong>を比べます。</p>
     <div class="panel">
       <div class="btn-row" style="align-items:flex-end;flex-wrap:wrap;gap:10px">
@@ -103,8 +147,8 @@
         <button class="btn" data-set="8, 7, 6, 5, 4, 3, 2, 1">逆に並んでいる</button>
         <button class="btn" id="randData">でたらめに作る</button>
       </div>
-      <label class="fld" for="nData" style="margin-top:12px">でたらめに作るときの個数：<span class="mono" id="nDataV">8</span> 個</label>
-      <input type="range" id="nData" min="4" max="30" step="1" value="8">
+      <label class="fld" for="nData" style="margin-top:12px">でたらめに作るときの個数：<span class="mono" id="nDataV">12</span> 個</label>
+      <input type="range" id="nData" min="4" max="30" step="1" value="12">
       <div class="race" id="raceBox" style="margin-top:14px"></div>
       <div class="note" id="raceNote" style="margin-top:12px"></div>
       <hr class="sep">

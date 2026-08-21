@@ -214,6 +214,102 @@
     return st;
   }
 
+
+  /* ===================== 2つを並べて同時に動かす ===================== */
+  const D = { b: [], s: [], i: 0, timer: null, n: 12 };
+
+  function dGen(kind) {
+    const n = D.n, a = [];
+    for (let k = 0; k < n; k++) a.push(10 + Math.round(k * (88 / Math.max(1, n - 1))));
+    if (kind === 'rev') { a.reverse(); return a; }
+    if (kind === 'near') {                       /* ほぼ並んでいる：2か所だけ入れかえる */
+      for (let t = 0; t < Math.max(1, Math.round(n / 8)); t++) {
+        const x = Math.floor(Math.random() * (n - 1));
+        const tmp = a[x]; a[x] = a[x + 1]; a[x + 1] = tmp;
+      }
+      return a;
+    }
+    for (let k = a.length - 1; k > 0; k--) {     /* でたらめ */
+      const j = Math.floor(Math.random() * (k + 1));
+      const t = a[k]; a[k] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function dBuild(kind) {
+    const data = dGen(kind || 'rand');
+    D.b = bubbleFrames(data);
+    D.s = selectionFrames(data);
+    D.i = 0;
+    dStop();
+    dShow();
+  }
+
+  function dSide(pre, frames) {
+    const f = frames[Math.min(D.i, frames.length - 1)];
+    const max = Math.max.apply(null, f.arr);
+    const ids = f.ids;
+    const val = {}; ids.forEach(function (id, k) { val[id] = f.arr[k]; });
+    const box = $(pre + 'Bars');
+    box.className = 'bars' + (ids.length > 8 ? ' dense' : '');
+    reorder(box, ids,
+      function () { const d = document.createElement('div'); d.innerHTML = '<i></i><span></span>'; return d; },
+      function (el, id, k) {
+        el.className = 'b ' + cls(k, f);
+        el.style.height = Math.max(6, val[id] / max * 100) + '%';
+        el.firstChild.textContent = k;
+        el.lastChild.textContent = val[id];
+      });
+    $(pre + 'Cmp').textContent = f.c;
+    $(pre + 'Swp').textContent = f.s;
+    const done = D.i >= frames.length - 1;
+    const n = $(pre + 'Note');
+    n.className = 'note ' + (done ? 'ok' : 'info');
+    n.innerHTML = done ? '<strong>並びかえ完了。</strong>比較 ' + f.c + ' 回、交換 ' + f.s + ' 回。' : f.msg;
+    return { f: f, done: done, len: frames.length };
+  }
+
+  function dShow() {
+    const b = dSide('db', D.b), s = dSide('ds', D.s);
+    const maxLen = Math.max(D.b.length, D.s.length);
+    $('dProg').textContent = Math.min(D.i, maxLen - 1) + 1 + ' / ' + maxLen + ' 手';
+    $('dStep').disabled = D.i >= maxLen - 1;
+    const n = $('dNote');
+    if (!(b.done && s.done)) {
+      n.className = 'note info';
+      n.innerHTML = '左は<strong>となり合う2つ</strong>を比べて、そのつど入れかえます。' +
+        '右は<strong>いちばん小さいものを探してから</strong>、1周に1回だけ入れかえます。' +
+        '<br>棒の動きかたのちがいに注目してください。';
+      return;
+    }
+    const bf = D.b[D.b.length - 1], sf = D.s[D.s.length - 1], N = bf.arr.length;
+    const diff = bf.s - sf.s;
+    n.className = 'note ok';
+    n.innerHTML = '<strong>どちらも同じ並びになりました。</strong>' +
+      '比較はどちらも <strong>' + bf.c + ' 回</strong>（n(n−1)÷2 ＝ ' + N + '×' + (N - 1) + '÷2）で同じです。<br>' +
+      '交換は バブル <strong>' + bf.s + ' 回</strong> に対して 選択 <strong>' + sf.s + ' 回</strong>' +
+      (diff > 0
+        ? '。<strong>選択ソートのほうが ' + diff + ' 回少なくてすみました。</strong>' +
+          '選択ソートの交換は<strong>1周に多くても1回</strong>なので、最大でも ' + (N - 1) + ' 回に収まります。' +
+          '<br>棒の数を増やすほど、この差は大きくなります。'
+        : diff === 0
+          ? '。この並びでは同じでした。<strong>「逆順」や「でたらめ」でもう一度</strong>試すと差が出ます。'
+          : '。めずらしくバブルのほうが少なくなりました。ほぼ並んでいるデータでは、バブルの交換が減るためです。') +
+      '<br><span class="small">比較の回数が同じなのは、どちらも「すべての組み合わせを1回ずつ見る」形だからです。' +
+      'ちがいが出るのは<strong>交換の回数</strong>のほうです。</span>';
+  }
+
+  function dStop() { if (D.timer) clearInterval(D.timer); D.timer = null; if ($('dPlay')) $('dPlay').textContent = '自動で動かす'; }
+  function dPlay() {
+    if (D.timer) { dStop(); return; }
+    $('dPlay').textContent = '止める';
+    D.timer = setInterval(function () {
+      const maxLen = Math.max(D.b.length, D.s.length);
+      if (D.i >= maxLen - 1) { dStop(); return; }
+      D.i++; dShow();
+    }, SWAP_MS + 180);
+  }
+
   /* ===================== STEP 3 比較 ===================== */
   function count(frames) { const f = frames[frames.length - 1]; return { c: f.c, s: f.s, arr: f.arr }; }
   function parseData(s) {
@@ -348,6 +444,31 @@
   }
 
   function init() {
+    if ($('dStep')) {
+      D.n = +$('dN').value;
+      dBuild('rand');
+      $('dStep').addEventListener('click', function () {
+        const maxLen = Math.max(D.b.length, D.s.length);
+        if (D.i < maxLen - 1) { D.i++; dShow(); }
+      });
+      $('dPlay').addEventListener('click', dPlay);
+      $('dEnd').addEventListener('click', function () {
+        dStop(); D.i = Math.max(D.b.length, D.s.length) - 1; dShow();
+      });
+      $('dReset').addEventListener('click', function () { dStop(); D.i = 0; dShow(); });
+      $('dN').addEventListener('input', function () {
+        D.n = +$('dN').value; $('dNv').textContent = D.n;
+        const on = document.querySelector('[data-dgen].primary');
+        dBuild(on ? on.dataset.dgen : 'rand');
+      });
+      document.querySelectorAll('[data-dgen]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          document.querySelectorAll('[data-dgen]').forEach(x => x.classList.toggle('primary', x === b));
+          dBuild(b.dataset.dgen);
+        });
+      });
+    }
+
     makeRunner('b', bubbleFrames([92, 43, 58, 17]), BUBBLE_CODE);
     makeRunner('s', selectionFrames([92, 58, 17, 43]), SELECT_CODE);
     $('dataIn').addEventListener('input', drawRace);
