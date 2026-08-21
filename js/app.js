@@ -7,77 +7,83 @@
 
   function bubbleFrames(src) {
     const a = src.slice(), n = a.length, fr = [];
+    const ids = a.map((_, k) => k);          /* 値についたまま動く「札」の番号 */
     let cmp = 0, swp = 0;
     const done = [];
-    fr.push({ arr: a.slice(), i: null, j: null, line: 1, cmp: [], swap: [], done: [], c: 0, s: 0,
-      msg: '配列を用意しました。ここから始めます。' });
-    fr.push({ arr: a.slice(), i: null, j: null, line: 2, cmp: [], swap: [], done: [], c: 0, s: 0,
-      msg: '要素数 n ＝ <strong>' + n + '</strong> を求めました。' });
+    const snap = (o) => { o.arr = a.slice(); o.ids = ids.slice(); return o; };
+    fr.push(snap({ i: null, j: null, line: 1, cmp: [], swap: [], done: [], c: 0, s: 0,
+      msg: '配列を用意しました。ここから始めます。' }));
+    fr.push(snap({ i: null, j: null, line: 2, cmp: [], swap: [], done: [], c: 0, s: 0,
+      msg: '要素数 n ＝ <strong>' + n + '</strong> を求めました。' }));
     for (let i = 0; i <= n - 2; i++) {
-      fr.push({ arr: a.slice(), i: i, j: null, line: 3, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
-        msg: '<strong>' + (i + 1) + '周目</strong>（i ＝ ' + i + '）。ここから右端の2つに向かって比べていきます。' });
+      fr.push(snap({ i: i, j: null, line: 3, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
+        msg: '<strong>' + (i + 1) + '周目</strong>（i ＝ ' + i + '）。ここから右端の2つに向かって比べていきます。' }));
       for (let j = n - 2; j >= i; j--) {
         cmp++;
-        fr.push({ arr: a.slice(), i: i, j: j, line: 5, cmp: [j, j + 1], swap: [], done: done.slice(), c: cmp, s: swp,
-          msg: 'Data[' + j + ']＝' + a[j] + ' と Data[' + (j + 1) + ']＝' + a[j + 1] + ' を比べます。' });
+        fr.push(snap({ i: i, j: j, line: 5, cmp: [j, j + 1], swap: [], done: done.slice(), c: cmp, s: swp,
+          msg: 'Data[' + j + ']＝' + a[j] + ' と Data[' + (j + 1) + ']＝' + a[j + 1] + ' を比べます。' }));
         if (a[j] > a[j + 1]) {
           swp++;
           const t = a[j]; a[j] = a[j + 1]; a[j + 1] = t;
-          fr.push({ arr: a.slice(), i: i, j: j, line: 6, cmp: [], swap: [j, j + 1], done: done.slice(), c: cmp, s: swp,
-            msg: '左のほうが大きいので<strong>入れかえます</strong>。hozon を使って3行で入れかえるのがポイント。' });
+          const u = ids[j]; ids[j] = ids[j + 1]; ids[j + 1] = u;
+          fr.push(snap({ i: i, j: j, line: 6, cmp: [], swap: [j, j + 1], done: done.slice(), c: cmp, s: swp,
+            msg: '左のほうが大きいので<strong>入れかえます</strong>。hozon を使って3行で入れかえるのがポイント。' }));
         } else {
-          fr.push({ arr: a.slice(), i: i, j: j, line: 5, cmp: [j, j + 1], swap: [], done: done.slice(), c: cmp, s: swp,
-            msg: '左のほうが小さい（または同じ）ので、そのままにします。' });
+          fr.push(snap({ i: i, j: j, line: 5, cmp: [j, j + 1], swap: [], done: done.slice(), c: cmp, s: swp,
+            msg: '左のほうが小さい（または同じ）ので、そのままにします。' }));
         }
       }
       done.push(i);
-      fr.push({ arr: a.slice(), i: i, j: null, line: 3, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
-        msg: '<strong>Data[' + i + ']＝' + a[i] + ' が確定</strong>しました。いちばん小さいものが左に集まっていきます。' });
+      fr.push(snap({ i: i, j: null, line: 3, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
+        msg: '<strong>Data[' + i + ']＝' + a[i] + ' が確定</strong>しました。いちばん小さいものが左に集まっていきます。' }));
     }
     done.push(n - 1);
-    fr.push({ arr: a.slice(), i: null, j: null, line: 9, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
-      msg: '<strong>並びかえ完了。</strong>比較 ' + cmp + ' 回、交換 ' + swp + ' 回でした。' });
+    fr.push(snap({ i: null, j: null, line: 9, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
+      msg: '<strong>並びかえ完了。</strong>比較 ' + cmp + ' 回、交換 ' + swp + ' 回でした。' }));
     return fr;
   }
 
   function selectionFrames(src) {
     const a = src.slice(), n = a.length, fr = [];
+    const ids = a.map((_, k) => k);
     let cmp = 0, swp = 0;
     const done = [];
-    fr.push({ arr: a.slice(), i: null, j: null, min: null, line: 1, cmp: [], swap: [], done: [], c: 0, s: 0,
-      msg: '配列を用意しました。ここから始めます。' });
-    fr.push({ arr: a.slice(), i: null, j: null, min: null, line: 2, cmp: [], swap: [], done: [], c: 0, s: 0,
-      msg: '要素数 n ＝ <strong>' + n + '</strong> を求めました。' });
+    const snap = (o) => { o.arr = a.slice(); o.ids = ids.slice(); return o; };
+    fr.push(snap({ i: null, j: null, min: null, line: 1, cmp: [], swap: [], done: [], c: 0, s: 0,
+      msg: '配列を用意しました。ここから始めます。' }));
+    fr.push(snap({ i: null, j: null, min: null, line: 2, cmp: [], swap: [], done: [], c: 0, s: 0,
+      msg: '要素数 n ＝ <strong>' + n + '</strong> を求めました。' }));
     for (let i = 0; i <= n - 2; i++) {
       let mi = i;
-      fr.push({ arr: a.slice(), i: i, j: null, min: mi, line: 4, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
-        msg: '未整列の先頭は Data[' + i + ']。<strong>min_index ＝ ' + i + '</strong> としておきます。' });
+      fr.push(snap({ i: i, j: null, min: mi, line: 4, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
+        msg: '未整列の先頭は Data[' + i + ']。<strong>min_index ＝ ' + i + '</strong> としておきます。' }));
       for (let j = i + 1; j <= n - 1; j++) {
         cmp++;
-        fr.push({ arr: a.slice(), i: i, j: j, min: mi, line: 6, cmp: [j], swap: [], done: done.slice(), c: cmp, s: swp,
-          msg: 'いまの最小 Data[' + mi + ']＝' + a[mi] + ' と Data[' + j + ']＝' + a[j] + ' を比べます。' });
+        fr.push(snap({ i: i, j: j, min: mi, line: 6, cmp: [j], swap: [], done: done.slice(), c: cmp, s: swp,
+          msg: 'いまの最小 Data[' + mi + ']＝' + a[mi] + ' と Data[' + j + ']＝' + a[j] + ' を比べます。' }));
         if (a[mi] > a[j]) {
           mi = j;
-          fr.push({ arr: a.slice(), i: i, j: j, min: mi, line: 7, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
-            msg: 'こちらのほうが小さいので、<strong>min_index を ' + j + ' に更新</strong>します。' });
+          fr.push(snap({ i: i, j: j, min: mi, line: 7, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
+            msg: 'こちらのほうが小さいので、<strong>min_index を ' + j + ' に更新</strong>します。' }));
         }
       }
       if (mi !== i) {
         swp++;
         const t = a[i]; a[i] = a[mi]; a[mi] = t;
-        fr.push({ arr: a.slice(), i: i, j: null, min: mi, line: 8, cmp: [], swap: [i, mi], done: done.slice(), c: cmp, s: swp,
-          msg: '最小が見つかったので、<strong>先頭 Data[' + i + '] と入れかえます</strong>。1周につき交換は<strong>1回だけ</strong>です。' });
+        const u = ids[i]; ids[i] = ids[mi]; ids[mi] = u;
+        fr.push(snap({ i: i, j: null, min: mi, line: 8, cmp: [], swap: [i, mi], done: done.slice(), c: cmp, s: swp,
+          msg: '最小が見つかったので、<strong>先頭 Data[' + i + '] と入れかえます</strong>。1周につき交換は<strong>1回だけ</strong>です。' }));
       } else {
-        fr.push({ arr: a.slice(), i: i, j: null, min: mi, line: 8, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
-          msg: 'いちばん小さいのは先頭のままだったので、入れかえは<strong>不要</strong>です。' });
+        fr.push(snap({ i: i, j: null, min: mi, line: 8, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
+          msg: 'いちばん小さいのは先頭のままだったので、入れかえは<strong>不要</strong>です。' }));
       }
       done.push(i);
-      fr.push({ arr: a.slice(), i: i, j: null, min: null, line: 3, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
-        msg: '<strong>Data[' + i + ']＝' + a[i] + ' が確定</strong>しました。' });
+      fr.push(snap({ i: i, j: null, min: null, line: 3, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
+        msg: '<strong>Data[' + i + ']＝' + a[i] + ' が確定</strong>しました。' }));
     }
     done.push(n - 1);
-    fr.push({ arr: a.slice(), i: null, j: null, min: null, line: 11, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
-      msg: '<strong>並びかえ完了。</strong>比較 ' + cmp + ' 回、交換 ' + swp + ' 回でした。' });
+    fr.push(snap({ i: null, j: null, min: null, line: 11, cmp: [], swap: [], done: done.slice(), c: cmp, s: swp,
+      msg: '<strong>並びかえ完了。</strong>比較 ' + cmp + ' 回、交換 ' + swp + ' 回でした。' }));
     return fr;
   }
 
@@ -114,13 +120,61 @@
     if (f.min === k) return 'min';
     return '';
   }
+  /** 並びかえを「すべって入れかわる」ように見せる（FLIP）。
+      同じ札（要素）を使いまわし、位置の差だけを打ち消してからアニメで戻す。 */
+  const SWAP_MS = 420;
+  function reorder(box, ids, make, update) {
+    const kids = [...box.children];
+    const map = {}; kids.forEach(function (el) { map[el.dataset.id] = el; });
+    const fresh = kids.length !== ids.length || ids.some(function (id) { return !map[id]; });
+    if (fresh) {
+      box.innerHTML = '';
+      ids.forEach(function (id, k) {
+        const el = make(id); el.dataset.id = id; update(el, id, k); box.appendChild(el);
+      });
+      return false;
+    }
+    const before = {};
+    kids.forEach(function (el) { before[el.dataset.id] = el.getBoundingClientRect().left; });
+    ids.forEach(function (id, k) { const el = map[id]; update(el, id, k); box.appendChild(el); });
+    let moved = false;
+    ids.forEach(function (id) {
+      const el = map[id], dx = before[id] - el.getBoundingClientRect().left;
+      if (Math.abs(dx) < 1) { el.style.transition = ''; el.style.transform = ''; return; }
+      moved = true;
+      el.style.transition = 'none';
+      el.style.transform = 'translateX(' + dx + 'px)';
+      el.classList.add('moving');
+      void el.offsetWidth;                                    /* 位置を確定させる */
+      el.style.transition = 'transform ' + SWAP_MS + 'ms cubic-bezier(.45,.05,.35,1)';
+      el.style.transform = '';
+      setTimeout(function () { el.classList.remove('moving'); el.style.transition = ''; }, SWAP_MS + 40);
+    });
+    return moved;
+  }
+
   function draw(pre, frames, idx, code) {
     const f = frames[idx], max = Math.max.apply(null, f.arr);
-    $(pre + 'Bars').innerHTML = f.arr.map((v, k) =>
-      '<div class="b ' + cls(k, f) + '" style="height:' + Math.max(8, v / max * 100) + '%">' +
-      '<i>' + k + '</i><span>' + v + '</span></div>').join('');
-    $(pre + 'Arr').innerHTML = f.arr.map((v, k) =>
-      '<div class="c ' + cls(k, f) + '">' + v + '<em>[' + k + ']</em></div>').join('');
+    const ids = f.ids || f.arr.map(function (_, k) { return k; });
+    const val = {}; ids.forEach(function (id, k) { val[id] = f.arr[k]; });
+
+    reorder($(pre + 'Bars'), ids,
+      function () { const d = document.createElement('div'); d.innerHTML = '<i></i><span></span>'; return d; },
+      function (el, id, k) {
+        el.className = 'b ' + cls(k, f);
+        el.style.height = Math.max(8, val[id] / max * 100) + '%';
+        el.firstChild.textContent = k;
+        el.lastChild.textContent = val[id];
+      });
+
+    reorder($(pre + 'Arr'), ids,
+      function () { const d = document.createElement('div'); d.innerHTML = '<b></b><em></em>'; return d; },
+      function (el, id, k) {
+        el.className = 'c ' + cls(k, f);
+        el.firstChild.textContent = val[id];
+        el.lastChild.textContent = '[' + k + ']';
+      });
+
     const vs = [];
     if (f.i !== null && f.i !== undefined) vs.push('i ＝ <b>' + f.i + '</b>');
     if (f.j !== null && f.j !== undefined) vs.push('j ＝ <b>' + f.j + '</b>');
@@ -153,7 +207,7 @@
       timer = setInterval(() => {
         if (i >= frames.length - 1) { stop(); return; }
         i++; show();
-      }, 550);
+      }, SWAP_MS + 260);
     }
     function stop() { if (timer) clearInterval(timer); timer = null; $(pre + 'Play').textContent = '自動で動かす'; }
     show();
@@ -202,7 +256,7 @@
 
 
   /* ===================== 手で並べかえる（人 vs アルゴリズム） ===================== */
-  const H = { a: [], mode: 'free', pick: -1, swp: 0, done: false };
+  const H = { a: [], ids: [], mode: 'free', pick: -1, swp: 0, done: false };
 
   function minSwaps(src) {           /* 自由に交換できるときの最小交換回数＝n − 巡回の個数 */
     const a = src.slice(), n = a.length;
@@ -226,7 +280,7 @@
       if (pool.indexOf(v) < 0) pool.push(v);
     }
     if (sortedYet(pool)) { pool.reverse(); }
-    H.a = pool; H.pick = -1; H.swp = 0; H.done = false;
+    H.a = pool; H.ids = pool.map(function (_, k) { return k; }); H.pick = -1; H.swp = 0; H.done = false;
     const b = count(bubbleFrames(H.a)), sl = count(selectionFrames(H.a));
     $('hBub').textContent = b.s + ' 回';
     $('hSel').textContent = sl.s + ' 回';
@@ -241,11 +295,19 @@
   function hDraw() {
     const box = $('hCards');
     box.className = 'hand' + (H.done ? ' done' : '');
-    box.innerHTML = H.a.map(function (v, i) {
-      const c = H.done ? 'ok' : (i === H.pick ? 'pick' : '');
-      return '<button class="card ' + c + '" data-i="' + i + '">' + v + '<em>[' + i + ']</em></button>';
-    }).join('');
-    box.querySelectorAll('button[data-i]').forEach(b => b.addEventListener('click', () => hTap(+b.dataset.i)));
+    const val = {}; H.ids.forEach(function (id, k) { val[id] = H.a[k]; });
+    reorder(box, H.ids,
+      function () {
+        const b = document.createElement('button');
+        b.innerHTML = '<b></b><em></em>';
+        b.addEventListener('click', function () { hTap([...box.children].indexOf(b)); });
+        return b;
+      },
+      function (el, id, k) {
+        el.className = 'card ' + (H.done ? 'ok' : (k === H.pick ? 'pick' : ''));
+        el.firstChild.textContent = val[id];
+        el.lastChild.textContent = '[' + k + ']';
+      });
     $('hSwp').textContent = H.swp + ' 回';
   }
 
@@ -262,6 +324,7 @@
       H.pick = -1; hDraw(); return;
     }
     const t = H.a[H.pick]; H.a[H.pick] = H.a[i]; H.a[i] = t;
+    const u = H.ids[H.pick]; H.ids[H.pick] = H.ids[i]; H.ids[i] = u;
     H.swp++; H.pick = -1;
     if (sortedYet(H.a)) {
       H.done = true; hDraw();
